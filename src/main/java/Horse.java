@@ -48,3 +48,4 @@ public class Horse {
         return (Math.random() * (max - min)) + min;
     }
 }
+
