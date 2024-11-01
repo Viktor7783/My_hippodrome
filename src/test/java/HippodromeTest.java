@@ -1,12 +1,14 @@
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("Тест Ипподрома")
@@ -14,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class HippodromeTest {
     private Exception exception;
     Hippodrome hippodrome;
+    List<Horse> horses;
 
     @Test
     @Order(1)
@@ -47,7 +50,7 @@ class HippodromeTest {
     @Order(5)
     @DisplayName("Тест: метод getHorses() возвращает список, который содержит те же объекты и в той же последовательности, что и список который был передан в конструктор")
     void shouldReturnListContainsTheSameObjectsAsListWasPassedInConstructor() {
-        List<Horse> horses = IntStream.range(1, 31).mapToObj(number -> new Horse(Horse.class.getSimpleName() + " " + number, number + 20, number + 40)).toList();
+        horses = IntStream.range(1, 31).mapToObj(number -> new Horse(Horse.class.getSimpleName() + " " + number, number + 20, number + 40)).toList();
         hippodrome = new Hippodrome(horses);
         assertArrayEquals(horses.toArray(new Horse[0]), hippodrome.getHorses().toArray(new Horse[0]));
     }
@@ -55,13 +58,19 @@ class HippodromeTest {
     @Test
     @Order(6)
     @ExtendWith(MockitoExtension.class)
-    @DisplayName("Тест: метод move() метод вызывает метод move() у всех лошадей")
+    @DisplayName("Тест: метод move() вызывает метод move() у всех лошадей")
     void moveMethodShouldCallsMoveMethodOnAllHorses() {
-
-        hippodrome = new Hippodrome()
+        hippodrome = new Hippodrome(IntStream.range(0, 50).mapToObj((n) -> mock(Horse.class)).toList());
+        hippodrome.move();
+        hippodrome.getHorses().forEach((h) -> verify(h).move());
     }
 
     @Test
-    void getWinner() {
+    @Order(7)
+    @DisplayName("Тест: метод getWinner() возвращает лошадь с самым большим значением distance")
+    void getWinnerMethodReturnHorseWithMaxDistance() {
+        Horse maxHorse = horses.get(horses.size() - 1);
+        hippodrome = new Hippodrome(horses);
+        assertEquals(maxHorse, hippodrome.getWinner());
     }
 }
