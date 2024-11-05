@@ -13,71 +13,64 @@ import static org.mockito.Mockito.mockStatic;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HorseTest {
     private Horse horse;
-    private Exception exception1;
-    private Exception exception2;
+    private Exception exception;
 
 
     @Test
     @Order(1)
     @DisplayName("Тест: при передаче в конструктор 1 параметром null, будет выброшено IllegalArgumentException")
     void shouldThrowIllegalArgumentExceptionIfConstructorGetNullFirstArgument() {
-        exception1 = assertThrows(IllegalArgumentException.class, () -> new Horse(null, 55));
-        exception2 = assertThrows(IllegalArgumentException.class, () -> new Horse(null, 55, 55));
+        exception = assertThrows(IllegalArgumentException.class, () -> new Horse(null, 55, 55));
     }
 
     @Test
     @Order(2)
     @DisplayName("Тест: при передаче в конструктор 1 параметром null, выброшенное исключение будет содержать сообщение \"Name cannot be null\"")
     void shouldShowRightMessageWhenThrowIllegalArgumentExceptionNullFirstArgument() {
-        assertEquals("Name cannot be null.", exception1.getMessage());
-        assertEquals("Name cannot be null.", exception2.getMessage());
+        assertEquals("Name cannot be null.", exception.getMessage());
     }
 
     @ParameterizedTest
     @Order(3)
     @DisplayName("Тест: при передаче в конструктор 1 параметром пустой строки/строки содержащей только пробельные символы => выброшено IllegalArgumentException")
-    @ValueSource(strings = {"", "\s\s\s\s\s\s\s"})
+    @ValueSource(strings = {"", "\s\s\s\s\s", "\t\t\t\t\t", "\n\n\n\n\n", "\r\r\r\r\r", "\f\f\f\f\f"})
     void shouldThrowIllegalArgumentExceptionIfConstructorGetEmptyFirstArgument(String argument) {
-        exception1 = assertThrows(IllegalArgumentException.class, () -> new Horse(argument, 55));
-        exception2 = assertThrows(IllegalArgumentException.class, () -> new Horse(argument, 55, 55));
+        exception = assertThrows(IllegalArgumentException.class, () -> new Horse(argument, 55, 55));
     }
 
     @Test
     @Order(4)
     @DisplayName("Тест: при передаче в конструктор 1 параметром пустой строки/строки содержащей только пробельные символы => выброшенное исключение будет содержать сообщение \"Name cannot be blank.\"")
     void shouldShowRightMessageWhenThrowIllegalArgumentExceptionEmptyFirstArgument() {
-        assertEquals("Name cannot be blank.", exception1.getMessage());
-        assertEquals("Name cannot be blank.", exception2.getMessage());
+        assertEquals("Name cannot be blank.", exception.getMessage());
     }
 
     @Test
     @Order(5)
     @DisplayName("Тест: при передаче в конструктор 2 параметром отрицательного числа, будет выброшено IllegalArgumentException")
     void shouldThrowIllegalArgumentExceptionWhenGetNegativeSecondArgument() {
-        exception1 = assertThrows(IllegalArgumentException.class, () -> new Horse("Августин", -1));
-        exception2 = assertThrows(IllegalArgumentException.class, () -> new Horse("Августин", -1, 55));
+        exception = assertThrows(IllegalArgumentException.class, () -> new Horse("Августин", -1, 55));
     }
 
     @Test
     @Order(6)
     @DisplayName("Тест: при передаче в конструктор вторым параметром отрицательного числа, выброшенное исключение будет содержать сообщение \"Speed cannot be negative.\"")
     void shouldShowRightMessageWhenThrowIllegalArgumentExceptionWhenGetNegativeSecondArgument() {
-        assertEquals("Speed cannot be negative.", exception1.getMessage());
-        assertEquals("Speed cannot be negative.", exception2.getMessage());
+        assertEquals("Speed cannot be negative.", exception.getMessage());
     }
 
     @Test
     @Order(7)
     @DisplayName("Тест: при передаче в конструктор третьим параметром отрицательного числа, будет выброшено IllegalArgumentException")
     void shouldThrowIllegalArgumentExceptionWhenGetNegativeThirdArgument() {
-        exception2 = assertThrows(IllegalArgumentException.class, () -> new Horse("Августин", 55, -1));
+        exception = assertThrows(IllegalArgumentException.class, () -> new Horse("Августин", 55, -1));
     }
 
     @Test
     @Order(8)
     @DisplayName("Тест: при передаче в конструктор третьим параметром отрицательного числа, выброшенное исключение будет содержать сообщение \"Distance cannot be negative.\"")
     void shouldShowRightMessageWhenThrowIllegalArgumentExceptionWhenGetNegativeThirdArgument() {
-        assertEquals("Distance cannot be negative.", exception2.getMessage());
+        assertEquals("Distance cannot be negative.", exception.getMessage());
     }
 
     @Test
